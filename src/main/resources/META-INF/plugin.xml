@@ -1,0 +1,29 @@
+<idea-plugin>
+    <id>com.winston.code.idea-generator</id>
+    <name>Plugin display name here</name>
+    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+
+    <description><![CDATA[
+    Enter short description for your plugin here.<br>
+    <em>most HTML tags may be used</em>
+    ]]></description>
+
+    <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.lang</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+        <projectService serviceInterface="com.winston.tools.DataBaseConfig" serviceImplementation="com.winston.tools.DataBaseConfig"/>
+        <projectConfigurable groupId="tools" displayName="GenerateCode" id="preference.DataBaseConfigurable" instance="com.winston.tools.DataBaseConfigurable" />
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+        <group id="generateCodeGroup" text="_Custom Menu" description="CustomMenu">
+            <add-to-group group-id="MainMenu" anchor="last"  />
+            <action id="generateCodeAction" class="com.winston.action.GenerateAction" text="GenerateCode" description="A tessst menu item" />
+        </group>
+    </actions>
+</idea-plugin>
