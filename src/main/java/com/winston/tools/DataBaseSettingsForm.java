@@ -8,13 +8,12 @@ import java.awt.event.ActionListener;
 import java.util.Optional;
 
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-public class DataBaseSettingsForm extends JDialog implements ActionListener {
+public class DataBaseSettingsForm implements ActionListener {
     private JPanel contentPane;
     private JComboBox<String> dbTypeComboBox;
     private JTextField dbUrlTextField;
@@ -25,7 +24,7 @@ public class DataBaseSettingsForm extends JDialog implements ActionListener {
     private DataBaseConfig config;
 
     public DataBaseSettingsForm() {
-        setContentPane(this.contentPane);
+
     }
 
     public void createUI(Project project) {
