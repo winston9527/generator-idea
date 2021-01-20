@@ -1,5 +1,5 @@
-
 package com.winston.tools;
+
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 
-@State(name="DataBaseConfig", storages={@com.intellij.openapi.components.Storage("DataBaseConfigToolConfig.xml")})
+@State(name = "DataBaseConfig", storages = {@com.intellij.openapi.components.Storage("DataBaseConfigToolConfig.xml")})
 @Data
 public class DataBaseConfig implements PersistentStateComponent<DataBaseConfig>, Serializable {
     private String dbType;
@@ -22,18 +22,15 @@ public class DataBaseConfig implements PersistentStateComponent<DataBaseConfig>,
 
     @Nullable
     @Override
-    public DataBaseConfig getState()
-    {
+    public DataBaseConfig getState() {
         return this;
     }
 
     @Override
-    public void loadState(@NotNull DataBaseConfig dataBaseConfig)
-    {
+    public void loadState(@NotNull DataBaseConfig dataBaseConfig) {
         XmlSerializerUtil.copyBean(dataBaseConfig, this);
     }
 
-    @Nullable
     public static DataBaseConfig getInstance(Project project) {
         return ServiceManager.getService(project, DataBaseConfig.class);
     }

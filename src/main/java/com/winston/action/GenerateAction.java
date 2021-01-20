@@ -16,7 +16,6 @@ import com.winston.code.generator.core.ui.TableNameFrame;
 import com.winston.code.generator.core.util.PropertiesHolder;
 import com.winston.code.generator.core.util.SqlSessionFactoryUtil;
 import com.winston.tools.DataBaseConfig;
-import com.winston.tools.RefreshDictionary;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -27,19 +26,18 @@ public class GenerateAction extends AnAction {
     public void actionPerformed(AnActionEvent e) {
 
         Project project = e.getRequiredData(CommonDataKeys.PROJECT);
-        String filePath = "";
+        String filePath;
         String packagePath = "";
+        PsiFileSystemItem refreshDictionary;
 
-        Object dataObj = e.getDataContext().getData("psi.Element");
+        Object dataObj = e.getData(CommonDataKeys.PSI_ELEMENT);
         System.err.println(dataObj);
         if (null != dataObj) {
             //Messages.showWarningDialog("||"+dataObj.toString(),"");
             if (dataObj instanceof PsiFileSystemItem) {
-
-                //Messages.showWarningDialog("类型1","");
                 PsiFileSystemItem psiFileSystemItem = (PsiFileSystemItem) dataObj;
                 filePath = psiFileSystemItem.getVirtualFile().getPath();
-                RefreshDictionary.psiFileSystemItem = psiFileSystemItem;
+                refreshDictionary = psiFileSystemItem;
                 PsiElement[] children = psiFileSystemItem.getChildren();
                 for (PsiElement child : children) {
                     //判断目录下是否存在java文件、方便获取package
@@ -52,7 +50,6 @@ public class GenerateAction extends AnAction {
                 }
                 if (StringUtils.isEmpty(packagePath)) {
                     //此处获取package方式不合理
-                    //Messages.showErrorDialog("base 地址"+project.getBasePath(),"Error");
                     String basePath = project.getBasePath();
                     packagePath = filePath.replace(basePath, "");
                     packagePath = packagePath.replaceFirst("/", "");
@@ -65,9 +62,8 @@ public class GenerateAction extends AnAction {
                 PsiClass psiClass = (PsiClass) dataObj;
                 packagePath = psiClass.getQualifiedName();
                 packagePath = packagePath.replace("." + psiClass.getName(), "");
-                //Messages.showWarningDialog(psiClass.getContainingFile().getContainingDirectory().getVirtualFile().getPath(),"");
                 filePath = psiClass.getContainingFile().getContainingDirectory().getVirtualFile().getPath();
-                RefreshDictionary.psiFileSystemItem = psiClass.getContainingFile().getContainingDirectory();
+                refreshDictionary = psiClass.getContainingFile().getContainingDirectory();
             }
         } else {
             Messages.showErrorDialog("Please choose a package to generate code!", "Error");
@@ -76,7 +72,6 @@ public class GenerateAction extends AnAction {
         if (StringUtils.isEmpty(filePath)) {
             filePath = project.getBasePath();
         }
-        //Messages.showWarningDialog("filePath:"+filePath+"\npackagePath:"+packagePath,"地址偶偶");
         DataBaseConfig config = DataBaseConfig.getInstance(project);
 
         //检查配置参数
@@ -102,7 +97,12 @@ public class GenerateAction extends AnAction {
             return;
         }
 
-        new TableNameFrame(filePath, packagePath);
+        PsiFileSystemItem finalRefreshDictionary = refreshDictionary;
+        new TableNameFrame(filePath, packagePath, () -> {
+            if (finalRefreshDictionary != null) {
+                finalRefreshDictionary.getVirtualFile().refresh(true, true);
+            }
+        });
     }
 
     private boolean validateConfig(Project project, DataBaseConfig config) {
