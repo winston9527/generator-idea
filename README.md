@@ -1,1 +1,1 @@
-# generator-idea
+# Generator for Idea
